@@ -1,0 +1,3 @@
+[submodule "udp-receiver-server"]
+	path = udp-receiver-server
+	url = https://github.com/KizEvo/udp-receiver-server.git
