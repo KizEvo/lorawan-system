@@ -1,3 +1,6 @@
 [submodule "udp-receiver-server"]
 	path = udp-receiver-server
 	url = https://github.com/KizEvo/udp-receiver-server.git
+[submodule "lorawan-app-client"]
+	path = lorawan-app-client
+	url = https://github.com/KizEvo/lorawan-app-client.git
