@@ -4,3 +4,6 @@
 [submodule "lorawan-app-client"]
 	path = lorawan-app-client
 	url = https://github.com/KizEvo/lorawan-app-client.git
+[submodule "lorawan-sensor-device"]
+	path = lorawan-sensor-device
+	url = https://github.com/KizEvo/lorawan-sensor-device.git
