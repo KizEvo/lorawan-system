@@ -12,7 +12,21 @@ Keeping track of changes/updates for reports.
 
 ![flowchart-system](https://github.com/user-attachments/assets/bb2dec51-1d31-49cf-9a15-4e10a0b1d0a3)
 
-## LoRaWAN
+### Other Sequence between Gateway and Network server
+
+`PUSH_DATA`: This packet type is used by the gateway mainly to forward the RF packets 
+received, and associated metadata, to the server.
+
+`PULL_DATA`: This packet type is used by the gateway to poll data from the server.
+- Data exchange is initialized by the gateway because it might be impossible for the server to send packets to the gateway if the gateway is behind a NAT.
+- When the gateway initialize the exchange, the network route towards the server will open and will allow for packets to flow both directions.
+- The gateway must periodically send PULL_DATA packets to be sure the network route stays open for the server to be used at any time.
+
+For more details checkout the [packet forwader protocol](https://github.com/Lora-net/packet_forwarder/blob/master/PROTOCOL.TXT) by Semtech
+
+![flowchart-gateway-network](https://github.com/user-attachments/assets/6a2ffdba-2304-47cc-87b2-b98031d23510)
+
+## LoRaWAN Architecture
 
 ### LoRaWAN Overview
 #### Introduction
@@ -52,11 +66,23 @@ The sensor device usually consist of two main parts: the sensor to get data from
 Currently the microcontroller in used is STM32F103C8T6, as for the sensor it can be any kind depends on the applications or problems we're trying to solve.
 
 ## Ascon
+The Ascon family is a set of lightweight cryptographic algorithms designed for efficiency, especially in resource-constrained environments such as IoT devices. It includes authenticated encryption and hashing algorithms. Ascon was selected in 2023 as the NIST lightweight cryptography standard.
 
-- Placeholder
+It consists of:
+- Authenticated encryption schemes with associated data (AEAD)
+- Hash functions (HASH) and extendible output functions (XOF)
+- Pseudo-random functions (PRF) and message authentication codes (MAC)
 
 ### Ascon MAC (Message Authentication Code) for LoRaWAN package
+The Ascon AEAD algorithm offer both encryption and message authentication. In the process of generating a ciphertext, Ascon use a built-in mechanism that generates a Message Authentication Code (MAC) to ensure that the message has not been changed during transmission. The MAC is part of the authentication process in Ascon’s AEAD mode.
 
+With the Ascon AEAD algorithm, the outputs are ciphertext and a tag. But with the standalone Ascon MAC algorithm, the output is a 128-bit tag used to authenticate the message.
+
+Leveraging this MAC algorithm, we can replace it with the traditional AES-CMAC used in LoRaWAN package frame.
+But does this algorithm provide any benefits over the old one ? Is it faster in term of calculation ? Does it cost a lot of memory space ?
+- We will take a look at these questions in another section.
+
+Currently this LoRaWAN system employ the [Asconmacav12 reference implementation](https://github.com/ascon/ascon-c/tree/main/crypto_auth/asconmacav12/ref) (self-contained, portable and very fast).
 ### Ascon MAC vs AES-MAC
 
 - Placeholder
