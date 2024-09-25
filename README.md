@@ -65,6 +65,13 @@ The sensor device usually consist of two main parts: the sensor to get data from
 
 Currently the microcontroller in used is STM32F103C8T6, as for the sensor it can be any kind depends on the applications or problems we're trying to solve.
 
+## LoRaWAN message format
+All LoRa uplink and downlink messages carry a PHY payload (Payload) starting with a single-octet MAC header (MHDR), followed by a MAC payload (MACPayload), and ending with a 4-octet message integrity code (MIC).
+
+**Note:** CRC is only available on uplink messages.
+
+![lora-package drawio](https://github.com/user-attachments/assets/63aea58b-bdca-4299-bc04-4584786a2dcb)
+
 ## Ascon
 The Ascon family is a set of lightweight cryptographic algorithms designed for efficiency, especially in resource-constrained environments such as IoT devices. It includes authenticated encryption and hashing algorithms. Ascon was selected in 2023 as the NIST lightweight cryptography standard.
 
@@ -83,6 +90,20 @@ But does this algorithm provide any benefits over the old one ? Is it faster in 
 - We will take a look at these questions in another section.
 
 Currently this LoRaWAN system employ the [Asconmacav12 reference implementation](https://github.com/ascon/ascon-c/tree/main/crypto_auth/asconmacav12/ref) (self-contained, portable and very fast).
+
+The message integrity code (MIC) is calculated over all the fields in the message using Ascon algorithm.
+
+**Pseudocode**
+```
+msg = MHDR | FHDR | FPort | FRMPayload
+mac = asconmacav12(NwkSKey, B | msg)
+MIC = mac[0..3]
+
+Where B:
+B = [0x49, 0x00, 0x00, 0x00, 0x00, Dir, DevAddr[4], FCntUp/Down[4], 0x00, len(msg)]
+```
+This will look familiar to you if you have implemented AES-CMAC before for LoRaWAN and you're correct ! Only the message authentication function changed, in this case it's `asconmacav12` instead of `aes128_cmac`
+
 ### Ascon MAC vs AES-MAC
 
 - Placeholder
