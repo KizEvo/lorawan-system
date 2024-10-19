@@ -58,6 +58,23 @@ For this system, the statments below are true for Network Server:
 - Forwarding uplink application payloads to the appropriate application servers
 - Routing uplink application payloads to the appropriate Application Server
 
+### LoRaWAN Gateway
+The LoRaWAN gateway in this system employs a RAK2287 LPWAN Gateway Concentrator Module from RAKwireless. This 8-channel LPWAN module supports the LoRaWAN 1.0.2 protocol and is equipped with a mini-PCIe form factor based on the SX1301 chip from Semtech. The gateway operates in the AS923 (AS2) frequency band. It has amazing document support from the store, large community and [very easy to setup](https://docs.rakwireless.com/Product-Categories/WisLink/RAK2287/Quickstart/).
+
+The table below lists available channel and it's frequency that the gateway is running.
+| Channel | Frequency (MHz)| Spreading Factor, Bandwidth |
+| ------------- | ------------- | ------------- |
+| 0  | 921.4  | SF7BW125 to SF12BW125  |
+| 1  | 921.6  | SF7BW125 to SF12BW125  |
+| 2  | 920.4  | SF7BW125 to SF12BW125  |
+| 3  | 920.6  | SF7BW125 to SF12BW125  |
+| 4  | 920.8  | SF7BW125 to SF12BW125  |
+| 5  | 921.0  | SF7BW125 to SF12BW125  |
+| 6  | 920.2  | SF7BW125 to SF12BW125  |
+| 7  | 921.2  | SF7BW125 to SF12BW125  |
+| Standard LoRa Channel | 921.3 | SF7BW250 |
+| FSK | 920.0 | FSK |
+
 ### Sensor Devices
 End devices are wirelessly connected to the LoRaWAN network through gateways using LoRa RF modulation. In this system, the devices are transmitting data in the AS923 (AS2) frequency band as specified in Vietnam's regulations which range from 920 MHz - 923 MHz.
 
@@ -71,6 +88,8 @@ All LoRa uplink and downlink messages carry a PHY payload (Payload) starting wit
 **Note:** CRC is only available on uplink messages.
 
 ![lora-package drawio](https://github.com/user-attachments/assets/63aea58b-bdca-4299-bc04-4584786a2dcb)
+
+The message payload is encrypted with AES-128 bit algorithm and the whole message frame is authenticated by message authentication code using Ascon algorithm. The message frame expose necessary information to let the Network Server decrypt the encrypted message (device address, package counter...) while not exposing sensitive information such as the payload data.
 
 ## Ascon
 The Ascon family is a set of lightweight cryptographic algorithms designed for efficiency, especially in resource-constrained environments such as IoT devices. It includes authenticated encryption and hashing algorithms. Ascon was selected in 2023 as the NIST lightweight cryptography standard.
